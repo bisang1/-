@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>직장인 성격유형 테스트</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="start-page">
+            <h1>나의 직장 성격유형 테스트</h1>
+            <p>20개의 질문으로 알아보는 당신의 직장 성격유형!</p>
+            <button onclick="startTest()">테스트 시작하기</button>
+        </div>
+
+        <div id="question-page" style="display: none;">
+            <div id="progress-bar">
+                <div id="progress"></div>
+            </div>
+            <h2 id="question-text"></h2>
+            <div class="options">
+                <button onclick="selectAnswer(1)">매우 그렇다</button>
+                <button onclick="selectAnswer(2)">그렇다</button>
+                <button onclick="selectAnswer(3)">보통이다</button>
+                <button onclick="selectAnswer(4)">아니다</button>
+                <button onclick="selectAnswer(5)">전혀 아니다</button>
+            </div>
+        </div>
+
+        <div id="result-page" style="display: none;">
+            <h2>당신의 직장 성격유형은...</h2>
+            <div id="result-type"></div>
+            <div id="result-description"></div>
+            <div class="additional-info">
+                <p>직장 생활에서 스트레스를 느끼시나요?</p>
+                <a href="https://bi-sang.com/정신질환-산업재해/" target="_blank">
+                    직장인 정신건강 자료 더보기
+                </a>
+            </div>
+            <button onclick="restartTest()">다시 테스트하기</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
 
