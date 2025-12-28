@@ -1,0 +1,34 @@
+{
+  "sources": [
+    {
+      "name": "AI타임스",
+      "type": "rss",
+      "url": "http://www.aitimes.com/rss/allArticle.xml",
+      "category": "korean"
+    },
+    {
+      "name": "전자신문 AI섹션",
+      "type": "scraping",
+      "url": "https://www.etnews.com/news/section.html?id1=04&id2=10",
+      "category": "korean",
+      "selectors": {
+        "article": "section.article_list ul li",
+        "title": "a strong",
+        "link": "a",
+        "date": "span.date"
+      }
+    },
+    {
+      "name": "TechCrunch AI",
+      "type": "rss",
+      "url": "https://techcrunch.com/tag/artificial-intelligence/feed/",
+      "category": "english"
+    },
+    {
+      "name": "OpenAI Blog",
+      "type": "rss",
+      "url": "https://openai.com/blog/rss.xml",
+      "category": "english"
+    }
+  ]
+}
