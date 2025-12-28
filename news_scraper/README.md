@@ -9,6 +9,7 @@
 - 최근 24시간 이내 뉴스만 필터링
 - JSON 형식으로 데이터 저장
 - **텔레그램 자동 알림 전송** ✨ (2단계 완료)
+- **사용하기 쉬운 GUI 버전** 🖥️ (NEW!)
 - 블로그 포스팅용으로 활용 가능
 
 ## 뉴스 소스
@@ -35,29 +36,77 @@ pip install requests beautifulsoup4 python-dateutil lxml
 
 ### 2. 실행
 
+**방법 1: GUI 버전 (추천)** 🖥️
+
+Windows:
+```bash
+run_gui.bat 더블클릭
+```
+
+Mac/Linux:
+```bash
+./run_gui.sh
+```
+
+**방법 2: 커맨드라인 버전**
+
 ```bash
 python scraper.py
 ```
 
-또는 실행 권한 부여 후:
+## 🖥️ GUI 버전 사용하기 (초보자 추천!)
+
+### 바탕화면에 바로가기 만들기
 
 ```bash
-chmod +x scraper.py
-./scraper.py
+python create_desktop_shortcut.py
+```
+
+실행하면 바탕화면에 "AI 뉴스 수집기" 아이콘이 생성됩니다!
+
+### GUI 기능
+
+1. **뉴스 수집 시작** - 버튼 한 번 클릭으로 모든 소스에서 뉴스 수집
+2. **텔레그램 테스트** - 텔레그램 봇 연결 확인
+3. **수집 결과 보기** - 수집된 뉴스를 예쁘게 표시
+4. **설정** - config.json 파일을 자동으로 생성/편집
+5. **실시간 로그** - 수집 과정을 실시간으로 확인
+
+### GUI 스크린샷
+
+```
+┌────────────────────────────────────┐
+│  🤖 AI 뉴스 자동 수집기            │
+├────────────────────────────────────┤
+│ 📱 텔레그램: ✅ 연결됨    [⚙️ 설정] │
+├────────────────────────────────────┤
+│ [▶️ 뉴스 수집 시작] [📤 텔레그램 테스트] │
+├────────────────────────────────────┤
+│ 📋 실행 로그                       │
+│ ┌────────────────────────────────┐ │
+│ │ [09:00:15] ℹ️ 뉴스 수집 시작... │ │
+│ │ [09:00:20] ✅ 15개 뉴스 수집   │ │
+│ │ [09:00:25] ✅ 텔레그램 전송 완료│ │
+│ └────────────────────────────────┘ │
+└────────────────────────────────────┘
 ```
 
 ## 파일 구조
 
 ```
 news_scraper/
-├── scraper.py              # 메인 스크립트
-├── telegram_notifier.py    # 텔레그램 알림 모듈
-├── sources.json            # 뉴스 소스 설정
-├── config.json.example     # 설정 파일 예제
-├── config.json             # 설정 파일 (직접 생성)
-├── collected_news.json     # 수집된 뉴스 (자동 생성)
-├── requirements.txt        # 필수 패키지 목록
-└── README.md              # 이 파일
+├── gui_app.py                  # 🖥️ GUI 메인 프로그램 (NEW!)
+├── run_gui.bat                 # Windows 실행 파일 (NEW!)
+├── run_gui.sh                  # Mac/Linux 실행 파일 (NEW!)
+├── create_desktop_shortcut.py  # 바탕화면 바로가기 생성 (NEW!)
+├── scraper.py                  # 커맨드라인 스크립트
+├── telegram_notifier.py        # 텔레그램 알림 모듈
+├── sources.json                # 뉴스 소스 설정
+├── config.json.example         # 설정 파일 예제
+├── config.json                 # 설정 파일 (직접 생성)
+├── collected_news.json         # 수집된 뉴스 (자동 생성)
+├── requirements.txt            # 필수 패키지 목록
+└── README.md                   # 이 파일
 ```
 
 ## 출력 형식
