@@ -302,11 +302,35 @@ class NewsCollector:
         print("\n" + "=" * 60 + "\n")
 
 
+def load_config(config_file: str = 'config.json') -> Optional[Dict]:
+    """
+    설정 파일을 로드합니다.
+
+    Args:
+        config_file: 설정 파일 경로
+
+    Returns:
+        설정 딕셔너리 또는 None
+    """
+    try:
+        with open(config_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"⚠️  {config_file} 파일을 찾을 수 없습니다. (텔레그램 알림 비활성화)")
+        return None
+    except json.JSONDecodeError:
+        print(f"❌ {config_file} 파일 형식이 잘못되었습니다.")
+        return None
+
+
 def main():
     """메인 실행 함수"""
     # 현재 스크립트의 디렉토리로 이동
     script_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(script_dir)
+
+    # 설정 로드
+    config = load_config()
 
     # 뉴스 수집기 초기화
     collector = NewsCollector()
@@ -319,6 +343,42 @@ def main():
 
     # JSON 파일로 저장
     collector.save_to_json()
+
+    # 텔레그램 알림 전송
+    if config and config.get('telegram', {}).get('enabled', False):
+        try:
+            from telegram_notifier import TelegramNotifier
+
+            telegram_config = config['telegram']
+            bot_token = telegram_config.get('bot_token', '')
+            chat_id = telegram_config.get('chat_id', '')
+
+            if bot_token and chat_id and bot_token != 'YOUR_BOT_TOKEN_HERE':
+                print("📱 텔레그램 알림 전송 중...\n")
+
+                notifier = TelegramNotifier(bot_token, chat_id)
+
+                notification_config = config.get('notification', {})
+                max_news = notification_config.get('max_news_per_message', 5)
+                include_summary = notification_config.get('include_summary', True)
+
+                # 뉴스 알림 전송
+                if notifier.send_news_notification(
+                    collector.collected_news,
+                    format_type='category',
+                    max_news=max_news,
+                    include_summary=include_summary
+                ):
+                    print("✅ 텔레그램 알림 전송 완료!\n")
+                else:
+                    print("❌ 텔레그램 알림 전송 실패\n")
+            else:
+                print("⚠️  텔레그램 봇 정보가 설정되지 않았습니다.\n")
+
+        except ImportError:
+            print("❌ telegram_notifier 모듈을 찾을 수 없습니다.\n")
+        except Exception as e:
+            print(f"❌ 텔레그램 알림 중 오류: {str(e)}\n")
 
 
 if __name__ == '__main__':

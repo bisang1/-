@@ -1,0 +1,17 @@
+{
+  "telegram": {
+    "bot_token": "YOUR_BOT_TOKEN_HERE",
+    "chat_id": "YOUR_CHAT_ID_HERE",
+    "enabled": true
+  },
+  "scraper": {
+    "hours_range": 24,
+    "max_news_per_source": 10,
+    "summary_length": 200
+  },
+  "notification": {
+    "send_immediately": true,
+    "max_news_per_message": 5,
+    "include_summary": true
+  }
+}
