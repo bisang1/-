@@ -254,6 +254,87 @@ python scraper.py
    ... 외 6개
 ```
 
+## 📱 휴대폰에서 사용하기 (텔레그램 봇)
+
+PC에서 봇 서버를 실행하고, 휴대폰 텔레그램에서 명령어로 뉴스를 수집하고 확인할 수 있습니다!
+
+### 1. 봇 서버 실행 (PC에서)
+
+**Windows:**
+```bash
+run_bot.bat 더블클릭
+```
+
+**Mac/Linux:**
+```bash
+./run_bot.sh
+```
+
+또는:
+```bash
+python telegram_bot.py
+```
+
+### 2. 휴대폰에서 사용
+
+텔레그램 앱을 열고 생성한 봇과 대화를 시작하세요!
+
+**사용 가능한 명령어:**
+
+```
+/start   - 봇 시작 및 환영 메시지
+/collect - 최신 AI 뉴스 수집 시작
+/latest  - 최신 뉴스 5개 보기
+/today   - 오늘 수집된 모든 뉴스 보기
+/stats   - 수집 통계 확인
+/help    - 도움말 보기
+```
+
+### 3. 사용 예시
+
+```
+👤 /collect
+🤖 뉴스 수집을 시작합니다...
+   잠시만 기다려주세요!
+
+🤖 ✅ 15개의 뉴스를 수집했습니다!
+   📱 뉴스 브리핑을 전송합니다...
+
+🤖 AI 뉴스 브리핑
+   📅 2025년 12월 28일 09:00
+   📊 총 15개의 뉴스
+
+   🇰🇷 한국 뉴스 (8개)
+   1. AI 기술 발전...
+   ...
+```
+
+### 4. PC를 계속 켜두세요
+
+- 봇 서버는 PC에서 실행됩니다
+- 휴대폰에서 명령을 보내면 PC가 뉴스를 수집합니다
+- PC가 꺼지면 봇이 작동하지 않습니다
+
+### 5. 백그라운드 실행 (선택사항)
+
+**Windows - 작업 스케줄러:**
+1. 작업 스케줄러 열기
+2. 기본 작업 만들기
+3. 트리거: 시스템 시작 시
+4. 동작: `run_bot.bat` 실행
+
+**Mac/Linux - nohup:**
+```bash
+nohup python3 telegram_bot.py &
+```
+
+**Linux - systemd 서비스:**
+```bash
+# /etc/systemd/system/ainews-bot.service 생성
+sudo systemctl enable ainews-bot
+sudo systemctl start ainews-bot
+```
+
 ## 고급 설정
 
 ### 수집 시간 범위 변경
