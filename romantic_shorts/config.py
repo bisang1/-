@@ -18,3 +18,22 @@ TARGET_WORD_COUNT = int(SHORTS_DURATION_SECONDS * WORDS_PER_SECOND)  # 약 100�
 MIDJOURNEY_STYLE_PREFIX = "Studio Ghibli style"
 CHARACTER_PROMPT_COUNT = 5
 BACKGROUND_PROMPT_COUNT = 5
+
+# TTS 음성 설정 (edge-tts 사용)
+TTS_VOICES = {
+    "남자 청년": "ko-KR-InJoonNeural",
+    "남자 중년": "ko-KR-HyunsuNeural",
+    "남자 노년": "ko-KR-GookMinNeural",
+    "여자 청년": "ko-KR-SunHiNeural",
+    "여자 중년": "ko-KR-JiMinNeural",
+    "여자 노년": "ko-KR-SoonBokNeural",
+}
+
+# 배속 설정
+SPEED_OPTIONS = {
+    "0.75x (느리게)": 0.75,
+    "1.0x (보통)": 1.0,
+    "1.25x (조금 빠르게)": 1.25,
+    "1.5x (빠르게)": 1.5,
+    "2.0x (매우 빠르게)": 2.0,
+}
