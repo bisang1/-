@@ -11,7 +11,7 @@ from datetime import datetime
 
 from generators import generate_titles, generate_script, generate_midjourney_prompts
 from tts_generator import generate_tts_with_speed, get_available_voices, get_speed_options
-from config import OPENAI_API_KEY
+from config import get_openai_api_key
 
 # 페이지 설정 (모바일 최적화)
 st.set_page_config(
@@ -464,8 +464,10 @@ def main():
     st.title("🌸 낭만처방 쇼츠 생성기")
 
     # API 키 체크
-    if not OPENAI_API_KEY:
-        st.error("⚠️ config.py에 OPENAI_API_KEY를 설정해주세요.")
+    api_key = get_openai_api_key()
+    if not api_key:
+        st.error("⚠️ API 키를 설정해주세요. (Streamlit Cloud: Secrets 설정 / 로컬: 환경변수 또는 config.py)")
+        st.info("💡 Streamlit Cloud에서는 Settings > Secrets에서 OPENAI_API_KEY를 설정하세요.")
         st.stop()
 
     # 단계 표시기

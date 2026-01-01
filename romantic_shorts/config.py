@@ -3,8 +3,12 @@
 낭만처방 쇼츠 - 설정 파일
 """
 
+import os
+
 # OpenAI API 설정
-OPENAI_API_KEY = ""  # 여기에 API 키 입력
+# 1. Streamlit Cloud: st.secrets에서 읽음 (app.py에서 처리)
+# 2. 로컬 환경: 환경변수 또는 직접 입력
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 
 # 미드저니 캐릭터 일관성 URL
 CHARACTER_REFERENCE_URL = "https://cdn.midjourney.com/35a36161-bd6d-4992-93c3-56a9e511a2c8/0_0.png"
@@ -37,3 +41,25 @@ SPEED_OPTIONS = {
     "1.5x (빠르게)": 1.5,
     "2.0x (매우 빠르게)": 2.0,
 }
+
+
+def get_openai_api_key():
+    """
+    OpenAI API 키를 가져옴
+    우선순위: Streamlit secrets > 환경변수 > config 직접 설정
+    """
+    # Streamlit Cloud secrets 확인
+    try:
+        import streamlit as st
+        if hasattr(st, 'secrets') and 'OPENAI_API_KEY' in st.secrets:
+            return st.secrets['OPENAI_API_KEY']
+    except:
+        pass
+
+    # 환경변수 확인
+    env_key = os.environ.get("OPENAI_API_KEY", "")
+    if env_key:
+        return env_key
+
+    # 직접 설정된 값 반환
+    return OPENAI_API_KEY

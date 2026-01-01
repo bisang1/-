@@ -5,7 +5,7 @@
 
 import openai
 from config import (
-    OPENAI_API_KEY, CHARACTER_REFERENCE_URL, TARGET_WORD_COUNT,
+    get_openai_api_key, CHARACTER_REFERENCE_URL, TARGET_WORD_COUNT,
     MIDJOURNEY_STYLE_PREFIX, CHARACTER_PROMPT_COUNT, BACKGROUND_PROMPT_COUNT
 )
 from word_library import get_word_library_prompt
@@ -13,7 +13,7 @@ from word_library import get_word_library_prompt
 
 def init_openai():
     """OpenAI API 초기화"""
-    openai.api_key = OPENAI_API_KEY
+    openai.api_key = get_openai_api_key()
 
 
 def generate_titles(topic: str) -> list:
