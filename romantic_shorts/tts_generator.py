@@ -5,19 +5,21 @@
 
 import asyncio
 import edge_tts
-from pydub import AudioSegment
 import os
+import re
 import tempfile
+import shutil
 from config import TTS_VOICES, SPEED_OPTIONS
 
 
-async def generate_tts_async(text: str, voice_name: str, output_path: str) -> str:
+async def generate_tts_async(text: str, voice_name: str, speed: float, output_path: str) -> str:
     """
     edge-tts를 사용하여 TTS 음성 생성 (비동기)
 
     Args:
         text: 변환할 텍스트
         voice_name: TTS_VOICES의 키 (예: "남자 청년")
+        speed: 배속 (1.0 = 보통)
         output_path: 출력 파일 경로
 
     Returns:
@@ -25,19 +27,28 @@ async def generate_tts_async(text: str, voice_name: str, output_path: str) -> st
     """
     voice_id = TTS_VOICES.get(voice_name, "ko-KR-InJoonNeural")
 
-    communicate = edge_tts.Communicate(text, voice_id)
+    # 배속을 edge-tts rate 형식으로 변환
+    # 1.0 = +0%, 1.5 = +50%, 0.75 = -25%
+    rate_percent = int((speed - 1.0) * 100)
+    if rate_percent >= 0:
+        rate = f"+{rate_percent}%"
+    else:
+        rate = f"{rate_percent}%"
+
+    communicate = edge_tts.Communicate(text, voice_id, rate=rate)
     await communicate.save(output_path)
 
     return output_path
 
 
-def generate_tts(text: str, voice_name: str, output_path: str) -> str:
+def generate_tts(text: str, voice_name: str, speed: float, output_path: str) -> str:
     """
     TTS 음성 생성 (동기 래퍼)
 
     Args:
         text: 변환할 텍스트
         voice_name: 음성 종류
+        speed: 배속
         output_path: 출력 파일 경로
 
     Returns:
@@ -50,7 +61,7 @@ def generate_tts(text: str, voice_name: str, output_path: str) -> str:
     asyncio.set_event_loop(loop)
     try:
         result = loop.run_until_complete(
-            generate_tts_async(clean_text, voice_name, output_path)
+            generate_tts_async(clean_text, voice_name, speed, output_path)
         )
         return result
     finally:
@@ -67,8 +78,6 @@ def clean_script_for_tts(text: str) -> str:
     Returns:
         str: 정리된 텍스트
     """
-    import re
-
     # 섹션 헤더 제거 [도입], [전개] 등
     text = re.sub(r'\[.*?\]', '', text)
 
@@ -91,46 +100,6 @@ def clean_script_for_tts(text: str) -> str:
     return text
 
 
-def change_audio_speed(input_path: str, output_path: str, speed: float) -> str:
-    """
-    오디오 파일의 배속 변경
-
-    Args:
-        input_path: 입력 파일 경로
-        output_path: 출력 파일 경로
-        speed: 배속 (1.0 = 원본 속도)
-
-    Returns:
-        str: 출력 파일 경로
-    """
-    if speed == 1.0:
-        # 배속 변경 없음 - 파일 복사만
-        if input_path != output_path:
-            import shutil
-            shutil.copy(input_path, output_path)
-        return output_path
-
-    # 오디오 로드
-    audio = AudioSegment.from_mp3(input_path)
-
-    # 배속 변경 (샘플레이트 조절 방식)
-    # speed > 1: 빠르게, speed < 1: 느리게
-    new_sample_rate = int(audio.frame_rate * speed)
-
-    # 샘플레이트 변경으로 속도 조절
-    speed_changed = audio._spawn(audio.raw_data, overrides={
-        "frame_rate": new_sample_rate
-    })
-
-    # 원래 샘플레이트로 복원 (피치 유지하면서 속도만 변경)
-    final_audio = speed_changed.set_frame_rate(audio.frame_rate)
-
-    # 저장
-    final_audio.export(output_path, format="mp3")
-
-    return output_path
-
-
 def generate_tts_with_speed(text: str, voice_name: str, speed: float, output_dir: str = None) -> str:
     """
     TTS 생성 + 배속 조절 통합 함수
@@ -147,19 +116,12 @@ def generate_tts_with_speed(text: str, voice_name: str, speed: float, output_dir
     if output_dir is None:
         output_dir = tempfile.gettempdir()
 
-    # 임시 파일로 TTS 생성
-    temp_path = os.path.join(output_dir, "tts_temp.mp3")
-    final_path = os.path.join(output_dir, f"낭만처방_tts_{voice_name}_{speed}x.mp3")
+    # 파일명에 사용할 수 없는 문자 제거
+    safe_voice_name = voice_name.replace(" ", "_")
+    final_path = os.path.join(output_dir, f"romantic_tts_{safe_voice_name}_{speed}x.mp3")
 
-    # TTS 생성
-    generate_tts(text, voice_name, temp_path)
-
-    # 배속 조절
-    change_audio_speed(temp_path, final_path, speed)
-
-    # 임시 파일 삭제
-    if os.path.exists(temp_path) and temp_path != final_path:
-        os.remove(temp_path)
+    # TTS 생성 (배속 포함)
+    generate_tts(text, voice_name, speed, final_path)
 
     return final_path
 
